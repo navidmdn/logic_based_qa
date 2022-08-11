@@ -1,0 +1,1 @@
+git+https://github.com/yuce/pyswip@master#egg=pyswip

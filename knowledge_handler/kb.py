@@ -2,7 +2,7 @@ from tqdm import tqdm
 from typing import Set, List
 
 
-class KBHandler:
+class KB:
     def __init__(self, kb_path: str):
         self.kb_path = kb_path
         self.entities, self.relations, self.triplets = self.load_kb()
@@ -11,7 +11,7 @@ class KBHandler:
         raise NotImplementedError()
 
 
-class MetaQAKBHandler(KBHandler):
+class MetaQAKB(KB):
     def __init__(self, kb_path: str):
         super().__init__(kb_path)
 
