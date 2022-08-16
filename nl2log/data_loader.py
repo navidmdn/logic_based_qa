@@ -6,6 +6,7 @@ from typing import List, Tuple
 from torch.utils.data import Dataset, DataLoader
 from knowledge_handler.prolog import PrologDA
 from knowledge_handler.kb import MetaQAKB
+import random
 
 import argparse
 
@@ -36,19 +37,20 @@ class MetaQADataLoader:
         }
         
         self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
+        random.shuffle(self.raw_train)
 
     def save_jsonl(self, base_path):
         questions, logical_steps = zip(*self.raw_train)
         train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
-        train_df.to_json(os.path.join(base_path, 'train.jsonl'), orient='records', lines=True)
+        train_df.to_json(os.path.join(base_path, 'train.json'), orient='records', lines=True)
 
         questions, logical_steps = zip(*self.raw_dev)
         dev_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
-        dev_df.to_json(os.path.join(base_path, 'dev.jsonl'), orient='records', lines=True)
+        dev_df.to_json(os.path.join(base_path, 'dev.json'), orient='records', lines=True)
 
         questions, logical_steps = zip(*self.raw_test)
         test_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
-        test_df.to_json(os.path.join(base_path, 'test.jsonl'), orient='records', lines=True)
+        test_df.to_json(os.path.join(base_path, 'test.json'), orient='records', lines=True)
 
     @staticmethod
     def logics_str_to_steps(logics_str):

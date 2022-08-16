@@ -32,6 +32,7 @@ import nltk  # Here to have a nice missing dependency error message early on
 import numpy as np
 import evaluate
 from datasets import load_dataset
+import datasets
 
 import transformers
 from filelock import FileLock
@@ -696,25 +697,6 @@ def main():
                 output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
                 with open(output_prediction_file, "w") as writer:
                     writer.write("\n".join(predictions))
-
-    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
-    if data_args.dataset_name is not None:
-        kwargs["dataset_tags"] = data_args.dataset_name
-        if data_args.dataset_config_name is not None:
-            kwargs["dataset_args"] = data_args.dataset_config_name
-            kwargs["dataset"] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
-        else:
-            kwargs["dataset"] = data_args.dataset_name
-
-    if data_args.lang is not None:
-        kwargs["language"] = data_args.lang
-
-    if training_args.push_to_hub:
-        trainer.push_to_hub(**kwargs)
-    else:
-        trainer.create_model_card(**kwargs)
-
-    return results
 
 
 def _mp_fn(index):
