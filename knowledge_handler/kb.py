@@ -27,11 +27,11 @@ class MetaQAKB(KB):
         with open(self.kb_path, 'r') as f:
             lines = f.read().strip().split('\n')
             for line in tqdm(lines):
-                triplets = line.split('|')
-                triplets.append(triplets)
-                entities.add(triplets[0])
-                entities.add(triplets[2])
-                relations.add(triplets[1])
+                triplet = line.split('|')
+                triplets.append(triplet)
+                entities.add(triplet[0])
+                entities.add(triplet[2])
+                relations.add(triplet[1])
 
         print(f"loaded {len(triplets)} triplets with {len(entities)} entities and {len(relations)} relations")
         return entities, relations, triplets

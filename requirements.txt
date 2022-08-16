@@ -1,1 +1,5 @@
+torch
 git+https://github.com/yuce/pyswip@master#egg=pyswip
+transformers main branch
+datasets
+evaluate

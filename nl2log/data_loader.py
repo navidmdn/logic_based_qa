@@ -1,8 +1,13 @@
 import os
 import re
+
+import pandas as pd
+from typing import List, Tuple
+from torch.utils.data import Dataset, DataLoader
 from knowledge_handler.prolog import PrologDA
 from knowledge_handler.kb import MetaQAKB
 
+import argparse
 
 class MetaQADataLoader:
     def __init__(self, base_path):
@@ -14,7 +19,7 @@ class MetaQADataLoader:
 
         self.prolog_da.add_kb_entities_and_relations(self.kb, add_reverse_rel=True)
 
-        self.logic_to_predicate_dict = {
+        self.hop_step_to_predicate_dict = {
             'actor_movie': 'starred_actors_reverse',
             'director_movie': 'directed_by_reverse',
             'movie_actor': 'starred_actors',
@@ -29,6 +34,21 @@ class MetaQADataLoader:
             'tag_movie': 'has_tags_reverse',
             'writer_movie': 'written_by_reverse'
         }
+        
+        self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
+
+    def save_jsonl(self, base_path):
+        questions, logical_steps = zip(*self.raw_train)
+        train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
+        train_df.to_json(os.path.join(base_path, 'train.jsonl'), orient='records', lines=True)
+
+        questions, logical_steps = zip(*self.raw_dev)
+        dev_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
+        dev_df.to_json(os.path.join(base_path, 'dev.jsonl'), orient='records', lines=True)
+
+        questions, logical_steps = zip(*self.raw_test)
+        test_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
+        test_df.to_json(os.path.join(base_path, 'test.jsonl'), orient='records', lines=True)
 
     @staticmethod
     def logics_str_to_steps(logics_str):
@@ -73,7 +93,7 @@ class MetaQADataLoader:
         query_string = ', '.join(predicates_query)
         return predicates, query_string
 
-    def load_raw_data(self, base_path):
+    def load_raw_data(self, base_path) -> Tuple[List, List, List]:
         multi_hop_paths = ['1hop', '2hop', '3hop']
         train_raw_data = []
         test_raw_data = []
@@ -82,7 +102,6 @@ class MetaQADataLoader:
         for multi_hop_path in multi_hop_paths:
             hop_path = os.path.join(base_path, multi_hop_path)
             for split, ds in zip(['train', 'test', 'dev'], [train_raw_data, test_raw_data, dev_raw_data]):
-                print(f"loading {split} dataset")
 
                 questions_path = os.path.join(hop_path, f'qa_{split}.txt')
                 logical_steps_path = os.path.join(hop_path, f'qa_{split}_qtype.txt')
@@ -103,11 +122,29 @@ class MetaQADataLoader:
                         predicates, _ = self.create_query_string(
                             question,
                             logic_step,
-                            self.logic_to_predicate_dict,
+                            self.hop_step_to_predicate_dict,
                             self.prolog_da.ent_vocab,
                             self.prolog_da.rel_vocab
                         )
                         logical_steps.append(", ".join(predicates))
                 ds.extend(list(zip(questions, logical_steps)))
+        
+        print(f'train set size:{len(train_raw_data)}, test set size: {len(test_raw_data)}, '
+              f'dev set size: {len(dev_raw_data)}')
+
         return train_raw_data, test_raw_data, dev_raw_data
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_path', type=str, default='./data')
+    parser.add_argument('--dataset', type=str, default='metaqa')
+
+    args = parser.parse_args()
+
+    if args.dataset == 'metaqa':
+        loader = MetaQADataLoader(args.data_path)
+    else:
+        raise NotImplementedError()
+
+    loader.save_jsonl(args.data_path)
