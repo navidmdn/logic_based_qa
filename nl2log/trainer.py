@@ -594,7 +594,8 @@ def main():
     )
 
     # Metric
-    metric = evaluate.load("rouge")
+    rouge_metric = evaluate.load("rouge")
+    exact_match_metric = evaluate.load("exact_match")
 
     def postprocess_text(preds, labels):
         preds = [pred.strip() for pred in preds]
@@ -607,6 +608,7 @@ def main():
         return preds, labels
 
     def compute_metrics(eval_preds):
+        result = {}
         preds, labels = eval_preds
         if isinstance(preds, tuple):
             preds = preds[0]
@@ -619,10 +621,17 @@ def main():
         # Some simple post-processing
         decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
 
-        result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
-        result = {k: round(v * 100, 4) for k, v in result.items()}
+        rouge_result = rouge_metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+        exact_match_result = exact_match_metric.compute(predictions=decoded_preds, references=decoded_labels)
+
+        rouge_result = {k: round(v * 100, 4) for k, v in rouge_result.items()}
+        exact_match_result = {k: round(v * 100, 4) for k, v in exact_match_result.items()}
         prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
-        result["gen_len"] = np.mean(prediction_lens)
+        rouge_result["gen_len"] = np.mean(prediction_lens)
+
+        result['rouge'] = rouge_result
+        result['exact_match'] = exact_match_result
+
         return result
 
     # Initialize our Trainer

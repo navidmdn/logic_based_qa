@@ -13,5 +13,5 @@ python nl2log/trainer.py \
     --per_device_eval_batch_size=32 \
     --predict_with_generate \
     --evaluation_strategy "steps" \
-    --eval_steps 500 \
+    --eval_steps 1000 \
     --num_train_epochs 1

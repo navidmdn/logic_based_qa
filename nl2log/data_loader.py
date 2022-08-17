@@ -3,7 +3,6 @@ import re
 
 import pandas as pd
 from typing import List, Tuple
-from torch.utils.data import Dataset, DataLoader
 from knowledge_handler.prolog import PrologDA
 from knowledge_handler.kb import MetaQAKB
 import random
