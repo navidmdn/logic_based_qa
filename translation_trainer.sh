@@ -7,7 +7,7 @@ python nl2log/trainer.py \
     --validation_file ./data/dev.json \
     --test_file ./data/test.json \
     --source_prefix "summarize: " \
-    --output_dir ./results \
+    --output_dir ./results/t5-v2 \
     --overwrite_output_dir \
     --per_device_train_batch_size=16 \
     --per_device_eval_batch_size=32 \

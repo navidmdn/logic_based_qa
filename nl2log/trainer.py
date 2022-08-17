@@ -629,8 +629,8 @@ def main():
         prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
         rouge_result["gen_len"] = np.mean(prediction_lens)
 
-        result['rouge'] = rouge_result
-        result['exact_match'] = exact_match_result
+        result.update(rouge_result)
+        result.update(exact_match_result)
 
         return result
 

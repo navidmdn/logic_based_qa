@@ -1,5 +1,6 @@
 import os
 import re
+import pickle
 
 import pandas as pd
 from typing import List, Tuple
@@ -50,6 +51,17 @@ class MetaQADataLoader:
         questions, logical_steps = zip(*self.raw_test)
         test_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
         test_df.to_json(os.path.join(base_path, 'test.json'), orient='records', lines=True)
+
+    def save_vocabs(self, base_path):
+        entity_vocab = self.prolog_da.ent_vocab
+        relation_vocab = self.prolog_da.rel_vocab
+
+        with open(os.path.join(base_path, 'entity_vocab.pkl'), 'wb') as f:
+            pickle.dump(entity_vocab, f)
+
+        with open(os.path.join(base_path, 'relation_vocab.pkl'), 'wb') as f:
+            pickle.dump(relation_vocab, f)
+
 
     @staticmethod
     def logics_str_to_steps(logics_str):
@@ -149,3 +161,4 @@ if __name__ == "__main__":
         raise NotImplementedError()
 
     loader.save_jsonl(args.data_path)
+    loader.save_vocabs(args.data_path)
