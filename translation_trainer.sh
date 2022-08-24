@@ -14,4 +14,5 @@ python nl2log/trainer.py \
     --predict_with_generate \
     --evaluation_strategy "steps" \
     --eval_steps 100 \
-    --num_train_epochs 1
+    --num_train_epochs 1 \
+    --generation_max_length 200
