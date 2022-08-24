@@ -35,7 +35,41 @@ class MetaQADataLoader:
             'tag_movie': 'has_tags_reverse',
             'writer_movie': 'written_by_reverse'
         }
-        
+
+        self._2hop_self_loop_keywords = [
+            'have the same',
+            'share the same',
+            'share the',
+            'co-wrote',
+            'also directed',
+            'also starred',
+            'also wrote',
+            'acted together',
+            'starred together',
+            'co-writers',
+            'co-star',
+            'co-directed',
+            # todo: we can cut this list short and see if model generalize or not
+            'also appears',
+            'same director',
+            'wrote movies together',
+            'wrote films together',
+            'co-directors',
+            'appeared in the same',
+            'together with',
+        ]
+
+        self._3hop_self_loop_keywords = [
+            'share actors',
+            'share directors',
+            'share writers',
+            'share actors',
+            'share screenwriters'
+            'also directed',
+            'also appear',
+            'also wrote',
+        ]
+
         self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
         random.shuffle(self.raw_train)
 
@@ -84,10 +118,10 @@ class MetaQADataLoader:
         # extract question concept
         question_concept = re.findall(r'\[(.+)\]', question_str)[0]
         # print(question_concept)
-
         # define prolog variables
         prolog_vars = ['X', 'Y', 'Z']
         logic_steps = self.logics_str_to_steps(question_steps)
+        n_hop = len(logic_steps)
         predicate_steps = [logic_to_predicate_dict[x] for x in logic_steps]
 
         # create predicates
@@ -102,6 +136,13 @@ class MetaQADataLoader:
                 f'{relation_vocab[predicate_steps[i]]}({prolog_vars[i - 1]},{prolog_vars[i]})'
             )
             i += 1
+
+        if n_hop == 2 and any([s in question_str for s in self._2hop_self_loop_keywords]):
+            predicates.append(f"not(Y=={question_concept})")
+            predicates_query.append(f"not(Y=={entity_vocab[question_concept]})")
+        elif n_hop == 3 and any([s in question_str for s in self._3hop_self_loop_keywords]):
+            predicates.append(f"not(Y=={question_concept})")
+            predicates_query.append(f"not(Y=={entity_vocab[question_concept]})")
 
         query_string = ', '.join(predicates_query)
         return predicates, query_string
