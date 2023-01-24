@@ -10,15 +10,16 @@ import random
 
 import argparse
 
+
 class MetaQADataLoader:
     def __init__(self, base_path):
         self.base_path = base_path
         self.prolog_da = PrologDA()
 
         kb_path = os.path.join(base_path, 'kb.txt')
-        self.kb = MetaQAKB(kb_path)
+        self.kb = MetaQAKB(kb_path, add_reverse_rel=True)
 
-        self.prolog_da.add_kb_entities_and_relations(self.kb, add_reverse_rel=True)
+        self.prolog_da.add_kb_entities_and_relations(self.kb)
 
         self.hop_step_to_predicate_dict = {
             'actor_movie': 'starred_actors_reverse',
@@ -117,6 +118,7 @@ class MetaQADataLoader:
     def create_query_string(self, question_str, question_steps, logic_to_predicate_dict, entity_vocab, relation_vocab):
         # extract question concept
         question_concept = re.findall(r'\[(.+)\]', question_str)[0]
+        question_concept = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
         # print(question_concept)
         # define prolog variables
         prolog_vars = ['X', 'Y', 'Z']
@@ -166,6 +168,8 @@ class MetaQADataLoader:
                     lines = f.read().strip().split('\n')
                     for line in lines:
                         q, a = line.split('\t')
+                        question_concept = re.findall(r'\[(.+)\]', q)[0]
+                        question_concept = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
                         questions.append(q)
 
                 with open(logical_steps_path, 'r') as f:

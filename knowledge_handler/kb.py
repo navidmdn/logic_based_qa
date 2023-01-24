@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from typing import Set, List
-
+import re
 
 class KB:
     def __init__(self, kb_path: str):
@@ -12,7 +12,11 @@ class KB:
 
 
 class MetaQAKB(KB):
-    def __init__(self, kb_path: str):
+    SPECIAL_CHAR = 'SPC'
+
+    def __init__(self, kb_path: str, add_reverse_rel: bool = True):
+        self.add_reverse_rel = add_reverse_rel
+        self.regex = re.compile("[^a-zA-Z0-9\\s*.!?',_\\-]")
         super().__init__(kb_path)
 
     def load_kb(self) -> (Set, Set, List):
@@ -24,14 +28,24 @@ class MetaQAKB(KB):
         relations = set()
         triplets = []
 
+
         with open(self.kb_path, 'r') as f:
             lines = f.read().strip().split('\n')
             for line in tqdm(lines):
                 triplet = line.split('|')
-                triplets.append(triplet)
-                entities.add(triplet[0])
-                entities.add(triplet[2])
-                relations.add(triplet[1])
+                e1 = self.regex.sub(self.SPECIAL_CHAR, triplet[0])
+                e2 = self.regex.sub(self.SPECIAL_CHAR, triplet[2])
+                r = triplet[1]
+
+                triplets.append([e1, r, e2])
+                if self.add_reverse_rel:
+                    rel = r + '_reverse'
+                    triplets.append([e2, rel, e1])
+                    relations.add(rel)
+
+                entities.add(e1)
+                entities.add(e2)
+                relations.add(r)
 
         print(f"loaded {len(triplets)} triplets with {len(entities)} entities and {len(relations)} relations")
         return entities, relations, triplets

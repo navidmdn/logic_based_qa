@@ -7,12 +7,12 @@ python nl2log/trainer.py \
     --validation_file ./data/dev.json \
     --test_file ./data/test.json \
     --source_prefix "summarize: " \
-    --output_dir ./results/t5-v3 \
+    --output_dir ./results/t5-small \
     --overwrite_output_dir \
     --per_device_train_batch_size=32 \
     --per_device_eval_batch_size=64 \
     --predict_with_generate \
     --evaluation_strategy "steps" \
     --eval_steps 1000 \
-    --num_train_epochs 3 \
+    --num_train_epochs 1 \
     --generation_max_length 200
