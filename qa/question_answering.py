@@ -63,7 +63,7 @@ class QuestionAnswering:
 
     def answer_question(self, question: str) -> str:
         question_ent = re.findall(r'\[(.+)\]', question)[0]
-        predicate = self.nl2predicates(question_ent)
+        predicate = self.nl2predicates(question)
         results = self.prolog_da.query(predicate, question_ent)
         return results
 

@@ -1,7 +1,7 @@
-torch==1.10.0
+transformers==4.23.1
 tqdm==4.62.3
 git+https://github.com/yuce/pyswip@master#egg=pyswip
-tensorboard==2.7.0
-transformers==4.23.1
 datasets==2.4.0
 evaluate==0.2.2
+rapidfuzz==2.5.0
+rouge-score==0.1.2
