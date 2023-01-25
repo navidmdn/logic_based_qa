@@ -169,7 +169,8 @@ class MetaQADataLoader:
                     for line in lines:
                         q, a = line.split('\t')
                         question_concept = re.findall(r'\[(.+)\]', q)[0]
-                        question_concept = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+                        question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+                        q = q.replace(question_concept, question_concept_cleaned)
                         questions.append(q)
 
                 with open(logical_steps_path, 'r') as f:

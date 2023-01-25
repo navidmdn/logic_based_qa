@@ -18,12 +18,10 @@ class MetaQADataLoader:
         kb_path = os.path.join(base_path, 'kb.txt')
         self.kb = MetaQAKB(kb_path)
 
-        self.prolog_da.add_kb_entities_and_relations(self.kb, add_reverse_rel=True)
+        self.prolog_da.add_kb_entities_and_relations(self.kb)
         self.dataset = self.load_question_answers(base_path, split)
 
-    #TODO: BIG TODO!
-    @staticmethod
-    def load_question_answers(base_path, split='test') -> Dict:
+    def load_question_answers(self, base_path, split='test') -> Dict:
         multi_hop_paths = ['1hop', '2hop', '3hop']
         dataset = {}
 
@@ -38,12 +36,11 @@ class MetaQADataLoader:
                 lines = f.read().strip().split('\n')
                 for line in lines:
                     q, a = line.split('\t')
+                    question_concept = re.findall(r'\[(.+)\]', q)[0]
+                    question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+                    q = q.replace(question_concept, question_concept_cleaned)
                     questions.append(q)
                     answers.append(a.split('|'))
 
             dataset[multi_hop_path] = list(zip(questions, answers))
         return dataset
-
-
-dl = MetaQADataLoader('./data', split='test')
-print(dl.dataset)
