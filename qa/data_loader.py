@@ -18,7 +18,7 @@ class MetaQADataLoader:
         kb_path = os.path.join(base_path, 'kb.txt')
         self.kb = MetaQAKB(kb_path)
 
-        self.prolog_da.add_kb_entities_and_relations(self.kb)
+        self.prolog_da.register_kb(self.kb)
         self.dataset = self.load_question_answers(base_path, split)
 
     def load_question_answers(self, base_path, split='test') -> Dict:

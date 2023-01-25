@@ -118,7 +118,7 @@ class MetaQADataLoader:
     def create_query_string(self, question_str, question_steps, logic_to_predicate_dict, entity_vocab, relation_vocab):
         # extract question concept
         question_concept = re.findall(r'\[(.+)\]', question_str)[0]
-        question_concept = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+        question_concept = self.kb.normalize_chars([question_concept])[0]
         # print(question_concept)
         # define prolog variables
         prolog_vars = ['X', 'Y', 'Z']

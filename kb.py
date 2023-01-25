@@ -89,5 +89,5 @@ class KB:
                 if triple[0] == movie and triple[1] == 'written_by':
                     results.append(triple[2])
         return results
-    
+
 kb = KB()
