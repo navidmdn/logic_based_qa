@@ -3,7 +3,7 @@ class KB:
         self.triples = []
         self.rels = set()
 
-        with open('data/kb.txt', 'r') as f:
+        with open('../data/kb.txt', 'r') as f:
             kb_data = f.read().strip().split('\n')
             for line in kb_data:
                 elems = line.split('|')
