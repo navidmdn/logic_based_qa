@@ -66,3 +66,14 @@ qa.answer_question(
     "the films that share actors with the film [Creepshow] were in which languages"
 )
 ```
+
+internally, this produces a Prolog query and then fetches the answers:
+
+```Prolog
+Query:
+starred_actors(Creepshow,X), starred_actors_reverse(X,Y), in_language(Y,Z), not(Y==Creepshow)
+
+Answer:
+['English', 'Polish']
+
+```
