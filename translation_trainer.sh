@@ -1,18 +1,19 @@
 python nl2log/trainer.py \
-    --model_name_or_path t5-small \
+    --model_name_or_path t5-large \
     --do_train \
     --do_eval \
     --do_predict \
-    --train_file ./data/train.json \
+    --train_file ./data/train_100.json \
     --validation_file ./data/dev.json \
     --test_file ./data/test.json \
     --source_prefix "summarize: " \
-    --output_dir ./results/t5-small \
+    --output_dir ./models/t5-large-100 \
     --overwrite_output_dir \
     --per_device_train_batch_size=32 \
     --per_device_eval_batch_size=64 \
     --predict_with_generate \
     --evaluation_strategy "steps" \
-    --eval_steps 1000 \
-    --num_train_epochs 1 \
-    --generation_max_length 200
+    --eval_steps 500 \
+    --num_train_epochs 10 \
+    --generation_max_length 200 \
+    --save_steps 500

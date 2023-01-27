@@ -74,10 +74,18 @@ class MetaQADataLoader:
         self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
         random.shuffle(self.raw_train)
 
-    def save_jsonl(self, base_path):
+    def save_jsonl(self, base_path, sample_size=None):
         questions, logical_steps = zip(*self.raw_train)
+        sample_name = "all"
+
+        if sample_size is not None:
+            sample_name = str(sample_size)
+            ds = list(zip(questions, logical_steps))
+            random.shuffle(ds)
+            questions, logical_steps = zip(*ds[:sample_size])
+
         train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
-        train_df.to_json(os.path.join(base_path, 'train.json'), orient='records', lines=True)
+        train_df.to_json(os.path.join(base_path, f'train_{sample_name}.json'), orient='records', lines=True)
 
         questions, logical_steps = zip(*self.raw_dev)
         dev_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
@@ -198,6 +206,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='./data')
     parser.add_argument('--dataset', type=str, default='metaqa')
+    parser.add_argument('--sample_size', type=int, default=None)
 
     args = parser.parse_args()
 
@@ -206,5 +215,5 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError()
 
-    loader.save_jsonl(args.data_path)
+    loader.save_jsonl(args.data_path, sample_size=args.sample_size)
     loader.save_vocabs(args.data_path)
