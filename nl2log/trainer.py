@@ -33,6 +33,7 @@ import numpy as np
 import evaluate
 from datasets import load_dataset
 import datasets
+from transformers import get_scheduler
 
 import transformers
 from filelock import FileLock
@@ -365,6 +366,8 @@ def main():
     #
     # In distributed training, the load_dataset function guarantee that only one local process can concurrently
     # download the dataset.
+
+    # training_args.lr_scheduler_type = "linear"
 
     if data_args.train_file is None and data_args.test_file is None and data_args.validation_file is None:
         raise ValueError("You must provide at least one of train_file, test_file, validation_file")

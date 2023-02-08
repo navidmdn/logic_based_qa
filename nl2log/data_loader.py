@@ -3,11 +3,10 @@ import re
 import pickle
 
 import pandas as pd
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from knowledge_handler.prolog import PrologDA
 from knowledge_handler.kb import MetaQAKB
 import random
-
 import argparse
 
 
@@ -72,28 +71,44 @@ class MetaQADataLoader:
         ]
 
         self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
-        random.shuffle(self.raw_train)
 
     def save_jsonl(self, base_path, sample_size=None):
-        questions, logical_steps = zip(*self.raw_train)
+
+        full_train_data = self.raw_train['1hop'] + self.raw_train['2hop'] + self.raw_train['3hop']
+        random.shuffle(full_train_data)
+
+        full_dev_data = self.raw_dev['1hop'] + self.raw_dev['2hop'] + self.raw_dev['3hop']
+        random.shuffle(full_dev_data)
+
+        questions, logical_steps, question_entities = zip(*full_train_data)
         sample_name = "all"
 
         if sample_size is not None:
             sample_name = str(sample_size)
-            ds = list(zip(questions, logical_steps))
-            random.shuffle(ds)
-            questions, logical_steps = zip(*ds[:sample_size])
+            _1hop_ds = self.raw_train['1hop']
+            _2hop_ds = self.raw_train['2hop']
+            _3hop_ds = self.raw_train['3hop']
+            random.shuffle(_1hop_ds)
+            random.shuffle(_2hop_ds)
+            random.shuffle(_3hop_ds)
+            full_train_data = _1hop_ds[:sample_size//3] + _2hop_ds[:sample_size//3] + _3hop_ds[:sample_size//3]
+            questions, logical_steps, question_entities = zip(*full_train_data[:sample_size])
 
-        train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
+        train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps,
+                                 'question_entities': question_entities})
         train_df.to_json(os.path.join(base_path, f'train_{sample_name}.json'), orient='records', lines=True)
 
-        questions, logical_steps = zip(*self.raw_dev)
-        dev_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
+        questions, logical_steps, question_entities = zip(*full_dev_data[:3000])
+
+        dev_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps,
+                               'question_entities': question_entities})
         dev_df.to_json(os.path.join(base_path, 'dev.json'), orient='records', lines=True)
 
-        questions, logical_steps = zip(*self.raw_test)
-        test_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps})
-        test_df.to_json(os.path.join(base_path, 'test.json'), orient='records', lines=True)
+        for hop in ['1hop', '2hop', '3hop']:
+            questions, logical_steps, question_entities = zip(*self.raw_test[hop])
+            test_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps,
+                                    'question_entities': question_entities})
+            test_df.to_json(os.path.join(base_path, f'test_{hop}.json'), orient='records', lines=True)
 
     def save_vocabs(self, base_path):
         entity_vocab = self.prolog_da.ent_vocab
@@ -125,9 +140,9 @@ class MetaQADataLoader:
 
     def create_query_string(self, question_str, question_steps, logic_to_predicate_dict, entity_vocab, relation_vocab):
         # extract question concept
-        question_concept = re.findall(r'\[(.+)\]', question_str)[0]
-        question_concept = self.kb.normalize_chars([question_concept])[0]
-        # print(question_concept)
+        question_concept_entity = re.findall(r'\[(.+)\]', question_str)[0]
+        # question_concept_entity = self.kb.normalize_chars([question_concept_entity])[0]
+        # print(question_concept_entity)
         # define prolog variables
         prolog_vars = ['X', 'Y', 'Z']
         logic_steps = self.logics_str_to_steps(question_steps)
@@ -135,8 +150,8 @@ class MetaQADataLoader:
         predicate_steps = [logic_to_predicate_dict[x] for x in logic_steps]
 
         # create predicates
-        p1 = f'{predicate_steps[0]}({question_concept},X)'
-        p1_query = f'{relation_vocab[predicate_steps[0]]}({entity_vocab[question_concept]},X)'
+        p1 = f'{predicate_steps[0]}({question_concept_entity},X)'
+        p1_query = f'{relation_vocab[predicate_steps[0]]}({question_concept_entity},X)'
         i = 1
         predicates = [p1, ]
         predicates_query = [p1_query, ]
@@ -147,21 +162,21 @@ class MetaQADataLoader:
             )
             i += 1
 
-        if n_hop == 2 and any([s in question_str for s in self._2hop_self_loop_keywords]):
-            predicates.append(f"not(Y=={question_concept})")
-            predicates_query.append(f"not(Y=={entity_vocab[question_concept]})")
-        elif n_hop == 3 and any([s in question_str for s in self._3hop_self_loop_keywords]):
-            predicates.append(f"not(Y=={question_concept})")
-            predicates_query.append(f"not(Y=={entity_vocab[question_concept]})")
+        # if n_hop == 2 and any([s in question_str for s in self._2hop_self_loop_keywords]):
+        #     predicates.append(f"not(Y=={question_concept_entity})")
+        #     predicates_query.append(f"not(Y=={entity_vocab[question_concept_entity]})")
+        # elif n_hop == 3 and any([s in question_str for s in self._3hop_self_loop_keywords]):
+        #     predicates.append(f"not(Y=={question_concept_entity})")
+        #     predicates_query.append(f"not(Y=={entity_vocab[question_concept_entity]})")
 
         query_string = ', '.join(predicates_query)
         return predicates, query_string
 
-    def load_raw_data(self, base_path) -> Tuple[List, List, List]:
+    def load_raw_data(self, base_path) -> Tuple[Dict, Dict, Dict]:
         multi_hop_paths = ['1hop', '2hop', '3hop']
-        train_raw_data = []
-        test_raw_data = []
-        dev_raw_data = []
+        train_raw_data = {h: [] for h in multi_hop_paths}
+        test_raw_data = {h: [] for h in multi_hop_paths}
+        dev_raw_data = {h: [] for h in multi_hop_paths}
 
         for multi_hop_path in multi_hop_paths:
             hop_path = os.path.join(base_path, multi_hop_path)
@@ -171,14 +186,18 @@ class MetaQADataLoader:
                 logical_steps_path = os.path.join(hop_path, f'qa_{split}_qtype.txt')
                 questions = []
                 logical_steps = []
+                question_entities = []
 
                 with open(questions_path, 'r') as f:
                     lines = f.read().strip().split('\n')
                     for line in lines:
                         q, a = line.split('\t')
                         question_concept = re.findall(r'\[(.+)\]', q)[0]
-                        question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
-                        q = q.replace(question_concept, question_concept_cleaned)
+                        # question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+                        # question_entity_form = self.prolog_da.ent_vocab[question_concept]
+                        question_entity_form = 'ENT'
+                        question_entities.append(question_concept)
+                        q = q.replace(question_concept, question_entity_form)
                         questions.append(q)
 
                 with open(logical_steps_path, 'r') as f:
@@ -194,10 +213,14 @@ class MetaQADataLoader:
                             self.prolog_da.rel_vocab
                         )
                         logical_steps.append(", ".join(predicates))
-                ds.extend(list(zip(questions, logical_steps)))
-        
-        print(f'train set size:{len(train_raw_data)}, test set size: {len(test_raw_data)}, '
-              f'dev set size: {len(dev_raw_data)}')
+                ds[multi_hop_path].extend(list(zip(questions, logical_steps, question_entities)))
+
+        train_size = len(train_raw_data['1hop']) + len(train_raw_data['2hop']) + len(train_raw_data['3hop'])
+        dev_size = len(dev_raw_data['1hop']) + len(dev_raw_data['2hop']) + len(dev_raw_data['3hop'])
+        test_size = len(test_raw_data['1hop']) + len(test_raw_data['2hop']) + len(test_raw_data['3hop'])
+
+        print(f'train set size:{train_size}, test set size: {test_size}, '
+              f'dev set size: {dev_size}')
 
         return train_raw_data, test_raw_data, dev_raw_data
 

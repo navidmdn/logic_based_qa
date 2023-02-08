@@ -17,11 +17,11 @@ class MetaQAKB(KB):
 
     def __init__(self, kb_path: str, add_reverse_rel: bool = True):
         self.add_reverse_rel = add_reverse_rel
-        self.regex = re.compile("[^a-zA-Z0-9\\s*.!?',_\\-]")
+        # self.regex = re.compile("[^a-zA-Z0-9\\s*.!?',_\\-]")
         super().__init__(kb_path)
 
-    def normalize_chars(self, strl: List[str]) -> List[str]:
-        return [self.regex.sub(self.SPECIAL_CHAR, x) for x in strl]
+    # def normalize_chars(self, strl: List[str]) -> List[str]:
+    #     return [self.regex.sub(self.SPECIAL_CHAR, x) for x in strl]
 
     def load_kb(self) -> (Set, Set, List):
         """
@@ -36,7 +36,8 @@ class MetaQAKB(KB):
             lines = f.read().strip().split('\n')
             for line in tqdm(lines):
                 triplet = line.split('|')
-                e1, e2 = self.normalize_chars([triplet[0], triplet[2]])
+                # e1, e2 = self.normalize_chars([triplet[0], triplet[2]])
+                e1, e2 = triplet[0], triplet[2]
                 r = triplet[1]
 
                 triplets.append([e1, r, e2])
