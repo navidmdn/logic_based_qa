@@ -31,16 +31,18 @@ class MetaQADataLoader:
             questions_path = os.path.join(hop_path, f'qa_{split}.txt')
             questions = []
             answers = []
+            question_concepts = []
 
             with open(questions_path, 'r') as f:
                 lines = f.read().strip().split('\n')
                 for line in lines:
                     q, a = line.split('\t')
                     question_concept = re.findall(r'\[(.+)\]', q)[0]
-                    question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
-                    q = q.replace(question_concept, question_concept_cleaned)
+                    # question_concept_cleaned = self.kb.regex.sub(self.kb.SPECIAL_CHAR, question_concept)
+                    q = q.replace(question_concept, 'ENT')
+                    question_concepts.append(question_concept)
                     questions.append(q)
                     answers.append(a.split('|'))
 
-            dataset[multi_hop_path] = list(zip(questions, answers))
+            dataset[multi_hop_path] = list(zip(questions, answers, question_concepts))
         return dataset

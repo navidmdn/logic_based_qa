@@ -92,6 +92,7 @@ class MetaQADataLoader:
             random.shuffle(_2hop_ds)
             random.shuffle(_3hop_ds)
             full_train_data = _1hop_ds[:sample_size//3] + _2hop_ds[:sample_size//3] + _3hop_ds[:sample_size//3]
+            random.shuffle(full_train_data)
             questions, logical_steps, question_entities = zip(*full_train_data[:sample_size])
 
         train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps,

@@ -21,7 +21,7 @@ class QuestionAnswering:
         return translator_model, translator_tokenizer
 
     def _nl2log_single(self, question: str) -> str:
-        question = f"summarize: {question}"
+        question = f"predicates: {question}"
         inputs = self.nl2log_tokenizer(
             question,
             return_tensors="pt",
@@ -33,7 +33,7 @@ class QuestionAnswering:
         return self.nl2log_tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     def _nl2log_batch(self, question: List[str], batch_size: int = 512) -> List[str]:
-        question = [f"summarize: {q}" for q in question]
+        question = [f"predicates: {q}" for q in question]
         inputs = self.nl2log_tokenizer(
             question,
             return_tensors="pt",

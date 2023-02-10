@@ -35,8 +35,9 @@ def generate_predicates(nl2log_model_path):
     qa = QuestionAnswering(nl2log_model_path, data_loader)
 
     for hop_name, dataset in data_loader.dataset.items():
-        ds_questions, _ = zip(*dataset)
+        ds_questions, _, ds_question_entities = zip(*dataset)
         predicates = qa.nl2predicates(ds_questions, batch_size=256)
+        predicates = [p.replace('ENT', e) for p, e in zip(predicates, ds_question_entities)]
 
         with open(f"./data/{hop_name}_predicates", 'wb') as f:
             pickle.dump(predicates, f)
@@ -50,23 +51,22 @@ def evaluate_qa_model(nl2log_model_path):
     subset_acc = []
 
     for hop_name, dataset in data_loader.dataset.items():
-        ds_questions, ds_answers = zip(*dataset)
-        ds_answers_char_normalized = [data_loader.kb.normalize_chars(ans_set) for ans_set in ds_answers]
+        ds_questions, ds_answers, _ = zip(*dataset)
 
         with open(f"./data/{hop_name}_predicates", 'rb') as f:
             ds_predicates = pickle.load(f)
 
         model_answers = []
 
-        for q, a, p in zip(ds_questions, ds_answers_char_normalized, ds_predicates):
+        for q, a, p in zip(ds_questions, ds_answers, ds_predicates):
             model_answer = qa.answer_question_by_precalculated_predicate(q, p)
             model_answers.append(model_answer)
 
         subset_sizes.append(len(model_answers))
-        acc = accuracy(model_answers, ds_answers_char_normalized)
+        acc = accuracy(model_answers, ds_answers)
         subset_acc.append(acc)
         print(f"{hop_name} accuracy: {acc}")
-        log_wrong_answers(model_answers, ds_answers_char_normalized, ds_questions)
+        log_wrong_answers(model_answers, ds_answers, ds_questions)
 
     avg_acc = [s * a for s, a in zip(subset_sizes, subset_acc)]
     avg_acc = sum(avg_acc) / sum(subset_sizes)
