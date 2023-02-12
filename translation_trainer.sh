@@ -2,14 +2,12 @@ python nl2log/trainer.py \
     --model_name_or_path t5-small \
     --do_train \
     --do_eval \
-    --do_predict \
-    --train_file ./data/train_10000.json \
+    --train_file "./data/$1.json" \
     --validation_file ./data/dev.json \
-    --test_file ./data/test_3hop.json \
     --source_prefix "predicates: " \
-    --output_dir ./models/t5-small-10k \
+    --output_dir "./models/t5-small-$1" \
     --overwrite_output_dir \
-    --per_device_train_batch_size=8 \
+    --per_device_train_batch_size=4 \
     --per_device_eval_batch_size=32 \
     --predict_with_generate \
     --evaluation_strategy "steps" \
@@ -17,5 +15,5 @@ python nl2log/trainer.py \
     --num_train_epochs 500\
     --max_steps 5000\
     --generation_max_length 200 \
-    --save_steps 1000 \
+    --save_steps 5000 \
     --cache_dir /user/smadani/navid/huggingface_cache

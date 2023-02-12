@@ -72,7 +72,7 @@ class MetaQADataLoader:
 
         self.raw_train, self.raw_test, self.raw_dev = self.load_raw_data(base_path)
 
-    def save_jsonl(self, base_path, sample_size=None):
+    def save_jsonl(self, base_path, sample_size=None, train_suffix=''):
 
         full_train_data = self.raw_train['1hop'] + self.raw_train['2hop'] + self.raw_train['3hop']
         random.shuffle(full_train_data)
@@ -97,7 +97,8 @@ class MetaQADataLoader:
 
         train_df = pd.DataFrame({'question': questions, 'logical_steps': logical_steps,
                                  'question_entities': question_entities})
-        train_df.to_json(os.path.join(base_path, f'train_{sample_name}.json'), orient='records', lines=True)
+        suffix = train_suffix if len(train_suffix) == 0 else f'_{train_suffix}'
+        train_df.to_json(os.path.join(base_path, f'train_{sample_name}{suffix}.json'), orient='records', lines=True)
 
         questions, logical_steps, question_entities = zip(*full_dev_data[:3000])
 
@@ -230,6 +231,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default='./data')
     parser.add_argument('--dataset', type=str, default='metaqa')
+    parser.add_argument('--train_suffix', type=str, default='')
     parser.add_argument('--sample_size', type=int, default=None)
 
     args = parser.parse_args()
@@ -239,5 +241,5 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError()
 
-    loader.save_jsonl(args.data_path, sample_size=args.sample_size)
+    loader.save_jsonl(args.data_path, sample_size=args.sample_size, train_suffix=args.train_suffix)
     loader.save_vocabs(args.data_path)
