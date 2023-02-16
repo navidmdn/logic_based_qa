@@ -66,7 +66,8 @@ def evaluate_translations_exact_accuracy(translated_output, logical_steps):
         if translated == logical_step:
             num_correct += 1
         else:
-            print(translated, logical_step)
+            #print(translated, logical_step)
+            pass
     return num_correct / len(translated_output)
 
 
