@@ -53,9 +53,8 @@ class QuestionAnswering:
         else:
             return self._nl2log_batch(questions, batch_size)
 
-    def answer_question_by_precalculated_predicate(self, question: str, predicate: str):
+    def answer_question_by_precalculated_predicate(self, question_ent: str, predicate: str):
         try:
-            question_ent = re.findall(r'\[(.+)\]', question)[0]
             results = self.prolog_da.query(predicate, question_ent)
             return results
         except Exception as e:

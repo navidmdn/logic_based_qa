@@ -35,6 +35,7 @@ def generate_predicates(nl2log_model_path):
     qa = QuestionAnswering(nl2log_model_path, data_loader)
 
     for hop_name, dataset in data_loader.dataset.items():
+        print(f"generating {hop_name} predicates...")
         ds_questions, _, ds_question_entities = zip(*dataset)
         predicates = qa.nl2predicates(ds_questions, batch_size=256)
         predicates = [p.replace('ENT', e) for p, e in zip(predicates, ds_question_entities)]
@@ -51,15 +52,15 @@ def evaluate_qa_model(nl2log_model_path):
     subset_acc = []
 
     for hop_name, dataset in data_loader.dataset.items():
-        ds_questions, ds_answers, _ = zip(*dataset)
+        ds_questions, ds_answers, ds_q_entities = zip(*dataset)
 
         with open(f"./data/{hop_name}_predicates", 'rb') as f:
             ds_predicates = pickle.load(f)
 
         model_answers = []
 
-        for q, a, p in zip(ds_questions, ds_answers, ds_predicates):
-            model_answer = qa.answer_question_by_precalculated_predicate(q, p)
+        for q, q_ent, a, p in zip(ds_questions, ds_q_entities, ds_answers, ds_predicates):
+            model_answer = qa.answer_question_by_precalculated_predicate(q_ent, p)
             model_answers.append(model_answer)
 
         subset_sizes.append(len(model_answers))
