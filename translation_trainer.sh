@@ -4,7 +4,7 @@ python nl2log/trainer.py \
     --do_eval \
     --train_file "./data/$1.json" \
     --validation_file ./data/dev.json \
-    --source_prefix "predicates: " \
+    --source_prefix "logical form: " \
     --output_dir "./models/t5-large-$1" \
     --overwrite_output_dir \
     --per_device_train_batch_size=4 \
@@ -16,4 +16,4 @@ python nl2log/trainer.py \
     --max_steps 5000\
     --generation_max_length 200 \
     --save_steps 5000 \
-    --cache_dir /user/smadani/navid/huggingface_cache
+    --cache_dir /Library/smadani/navid/huggingface_cache
