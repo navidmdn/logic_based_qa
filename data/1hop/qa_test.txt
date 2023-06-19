@@ -1407,7 +1407,7 @@ can you name a film directed by [Reginald Beck]	The Long Dark Hall
 which movies did [Colin Brady] direct	Everyone's Hero
 which films did [Eduardo Sánchez] direct	The Blair Witch Project|V/H/S/2|Altered|Lovely Molly|Exists
 what did [Russell Crowe] direct	The Water Diviner
-[Joseph L. Mankiewicz] directed which movies	All About Eve|Sleuth|Cleopatra|Guys and Dolls|Suddenly|Last Summer|Julius Caesar|The Barefoot Contessa|A Letter to Three Wives|People Will Talk|No Way Out|5 Fingers|There Was a Crooked Man...|Dragonwyck|House of Strangers|Somewhere in the Night|The Honey Pot|The Quiet American|A Carol for Another Christmas
+[Joseph L. Mankiewicz] directed which movies	All About Eve|Sleuth|Cleopatra|Guys and Dolls|Suddenly, Last Summer|Julius Caesar|The Barefoot Contessa|A Letter to Three Wives|People Will Talk|No Way Out|5 Fingers|There Was a Crooked Man...|Dragonwyck|House of Strangers|Somewhere in the Night|The Honey Pot|The Quiet American|A Carol for Another Christmas
 which films did [Stuart Millar] direct	Rooster Cogburn
 what movies did [Tony Martin] direct	Bad Eggs
 what did [Bruce Malmuth] direct	Hard to Kill|Nighthawks
@@ -8897,7 +8897,7 @@ which films can be described by [radiation]	Hulk|Attack of the Giant Leeches
 which movies can be described by [mutiny]	The Caine Mutiny
 what films are about [body modification]	American Mary
 which films can be described by [eva mendes]	Hitch|The Other Guys|Ghost Rider|2 Fast 2 Furious|The Spirit|Last Night
-which films can be described by [nastassja kinski]	Paris|Texas|Cat People|Unfaithfully Yours|Maria's Lovers
+which films can be described by [nastassja kinski]	Paris, Texas|Cat People|Unfaithfully Yours|Maria's Lovers
 what movies can be described with [philosophical]	The Matrix|Ghost in the Shell|The Addiction
 which films can be described by [broadway]	Mamma Mia!|Hairspray|Frost/Nixon|All About Eve|West Side Story|My Fair Lady|Dreamgirls|Little Shop of Horrors|Rent|The Producers|Cabaret|Fiddler on the Roof|Annie|Gentlemen Prefer Blondes|The King and I|The Music Man|Funny Girl|Guys and Dolls|Hello, Dolly!|Oklahoma!|The Band Wagon|M. Butterfly|Brigadoon|Bye Bye Birdie|Gold Diggers of 1933|The Great Ziegfeld|How to Succeed in Business Without Really Trying|The Pajama Game
 which films are about [child]	Bless the Child
@@ -8908,7 +8908,7 @@ which films are about [john candy]	The Blues Brothers|Spaceballs|Cool Runnings|U
 which movies are about [cabin]	The Cabin in the Woods|Cabin Fever
 what films can be described by [gene tierney]	Laura|The Ghost and Mrs. Muir|Leave Her to Heaven|Heaven Can Wait|Dragonwyck|The Shanghai Gesture
 which movies can be described by [kirby dick]	This Film Is Not Yet Rated|The Invisible War
-what movies can be described by [dean stockwell]	Paris|Texas|Compulsion
+what movies can be described by [dean stockwell]	Paris, Texas|Compulsion
 which movies are about [screenplay]	Inception|Slumdog Millionaire|Before Sunset|A Dangerous Method|Saw VI
 what movies can be described by [raymond burr]	Rear Window|Godzilla, King of the Monsters!|Gorilla at Large
 what films are about [patrick bateman]	American Psycho

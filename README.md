@@ -91,5 +91,46 @@ Answer:
 ```
 
 modifications to the 1-hop questions in test set:
-Paris, Texas
-Suddenly, Last Summer
+The answer set to the following question in 1hop qa_test modified from 
+
+1- 
+```
+[Joseph L. Mankiewicz] directed which movies
+	
+All About Eve|Sleuth|Cleopatra|Guys and Dolls|Suddenly|Last Summer|Julius Caesar|The Barefoot Contessa|A Letter to Three Wives|People Will Talk|No Way Out|5 Fingers|There Was a Crooked Man...|Dragonwyck|House of Strangers|Somewhere in the Night|The Honey Pot|The Quiet American|A Carol for Another Christmas
+```
+to:
+
+```
+All About Eve|Sleuth|Cleopatra|Guys and Dolls|Suddenly, Last Summer|Julius Caesar|The Barefoot Contessa|A Letter to Three Wives|People Will Talk|No Way Out|5 Fingers|There Was a Crooked Man...|Dragonwyck|House of Strangers|Somewhere in the Night|The Honey Pot|The Quiet American|A Carol for Another Christmas
+```
+
+Suddenly, Last Summer is one movie but in the test set wrongly stated as two seperate movies.
+
+2-
+
+```
+which films can be described by [nastassja kinski]
+
+Paris|Texas|Cat People|Unfaithfully Yours|Maria's Lovers
+```
+```
+what movies can be described by [dean stockwell]	
+
+Paris|Texas|Compulsion
+```
+
+changed to:
+```
+which films can be described by [nastassja kinski]
+
+Paris, Texas|Cat People|Unfaithfully Yours|Maria's Lovers
+```
+```
+what movies can be described by [dean stockwell]	
+
+Paris, Texas|Compulsion
+```
+
+because `Paris, Texas` is one movie in the knowledge graph but here wrongly stated
+as separate movies.
