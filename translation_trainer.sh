@@ -1,11 +1,11 @@
 python nl2log/trainer.py \
-    --model_name_or_path t5-large \
+    --model_name_or_path t5-small \
     --do_train \
     --do_eval \
     --train_file "./data/$1.json" \
     --validation_file ./data/dev.json \
     --source_prefix "logical form: " \
-    --output_dir "./models/t5-large-$1" \
+    --output_dir "./models/t5-small-$1" \
     --overwrite_output_dir \
     --per_device_train_batch_size=4 \
     --per_device_eval_batch_size=32 \

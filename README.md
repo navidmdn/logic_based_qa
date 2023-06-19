@@ -9,11 +9,12 @@ knowledge base over the MetaQA knowledge graph and answer the questions.
 
 ## Installing requirements
 
-This project has been tested on ubuntu 18.04 and macos 10.14 operating systems, with
-python 3.8.
+This project has been tested on ubuntu 20.04 and macos 10.14 operating systems, with
+python 3.10.
 
 ### python requirements
-    
+
+First [install pytorch](https://pytorch.org/get-started/locally/) based on your system's requirements. Then install requirements using this command:
 ```
 pip install -r requirements.txt
 ```
@@ -31,7 +32,7 @@ run the commands below inside the project base directory
 ### preparing dataset and training model
 
 ```
-!PYTHONPATH=. python nl2log/data_loader.py --data_path=./data --dataset=metaqa
+!PYTHONPATH=. python nl2log/data_loader.py --data_path=./data --dataset=metaqa --sample_
 bash translation_trainer.sh
 ```
 
