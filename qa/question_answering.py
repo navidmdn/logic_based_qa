@@ -6,16 +6,16 @@ from tqdm import tqdm
 
 
 class QuestionAnswering:
-    def __init__(self, pretrained_translator_path: str, data_loader):
+    def __init__(self, pretrained_translator_path: str, data_loader, cache_dir=None):
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
         # for accessing prolog module
         self.prolog_da = data_loader.prolog_da
-        self.nl2log_model, self.nl2log_tokenizer = self.load_pretrained_translator(pretrained_translator_path)
+        self.nl2log_model, self.nl2log_tokenizer = self.load_pretrained_translator(pretrained_translator_path, cache_dir)
 
-    def load_pretrained_translator(self, pretrained_translator_path):
+    def load_pretrained_translator(self, pretrained_translator_path, cache_dir=None):
 
-        translator_tokenizer = AutoTokenizer.from_pretrained(pretrained_translator_path)
-        translator_model = AutoModelForSeq2SeqLM.from_pretrained(pretrained_translator_path)
+        translator_tokenizer = AutoTokenizer.from_pretrained(pretrained_translator_path, cache_dir=cache_dir)
+        translator_model = AutoModelForSeq2SeqLM.from_pretrained(pretrained_translator_path, cache_dir=cache_dir)
         translator_model.eval()
         translator_model = translator_model.to(self.device)
 
@@ -34,11 +34,11 @@ class QuestionAnswering:
         return self.nl2log_tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     def _nl2log_batch(self, question: List[str], batch_size: int = 512) -> List[str]:
-        question = [f"predicates: {q}" for q in question]
+        question = [f"logical form: {q}" for q in question]
         inputs = self.nl2log_tokenizer(
             question,
             return_tensors="pt",
-            max_length=200,
+            max_length=100,
             truncation=True,
             padding=True
         ).input_ids
@@ -59,6 +59,9 @@ class QuestionAnswering:
             results = self.prolog_da.query(predicate, question_ent)
             return results
         except Exception as e:
+            print("EXXXX")
+            print(f'qent:{question_ent}, predicate:{predicate}')
+
             print(e)
 
     def answer_question(self, question: str) -> str:

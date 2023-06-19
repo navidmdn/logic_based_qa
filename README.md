@@ -89,3 +89,7 @@ Answer:
 ['English', 'Polish']
 
 ```
+
+modifications to the 1-hop questions in test set:
+Paris, Texas
+Suddenly, Last Summer

@@ -1,3 +1,5 @@
+import re
+
 from pyswip import Prolog
 from tqdm import tqdm
 from knowledge_handler.kb import KB
@@ -47,20 +49,31 @@ class PrologDA:
             if rel in query:
                 query = query.replace(rel, self.rel_vocab[rel])
 
-        try:
-            query = query.replace(question_entity, self.ent_vocab[question_entity])
-        except KeyError:
-            question_ent_rec = self.find_entity_by_ed(question_entity)
-            if question_ent_rec is None:
-                raise Exception("entity not found!")
+        args = re.split(r"rel_\d+", query)
+        args = [arg.strip() for arg in args if arg.strip() != ""]
+        args = [re.findall(r"\((.*)\)", arg)[0] for arg in args]
+        rels = re.findall(r"rel_\d+", query)
+        new_args = []
+        for arg in args:
+            try:
+                arg = arg.replace(question_entity, self.ent_vocab[question_entity])
+            except KeyError:
+                question_ent_rec = self.find_entity_by_ed(question_entity)
+                if question_ent_rec is None:
+                    raise Exception("entity not found!")
+                arg = arg.replace(question_entity, self.ent_vocab[question_ent_rec])
+            new_args.append(arg)
 
-            query = query.replace(question_entity, self.ent_vocab[question_ent_rec])
-
+        query = ", ".join([f"{rel}({arg})" for rel, arg in zip(rels, new_args)])
         return query
 
     def query(self, query: str, question_entity: str):
         query = self.transform_query_with_vocab(query, question_entity)
-        results = list(self.prolog.query(query))
+        try:
+            results = list(self.prolog.query(query))
+        except Exception as e:
+            print(f"final query: {query}")
+            raise e
 
         answers = []
         for res in results:

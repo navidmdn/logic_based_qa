@@ -44,9 +44,9 @@ def generate_predicates(nl2log_model_path):
             pickle.dump(predicates, f)
 
 
-def evaluate_qa_model(nl2log_model_path):
+def evaluate_qa_model(nl2log_model_path, cache_dir=None):
     data_loader = MetaQADataLoader('./data', split='test')
-    qa = QuestionAnswering(nl2log_model_path, data_loader)
+    qa = QuestionAnswering(nl2log_model_path, data_loader, cache_dir=cache_dir)
 
     subset_sizes = []
     subset_acc = []
@@ -78,11 +78,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default='./models/nl2log')
     parser.add_argument('--generate_predicates', action='store_true', default=False)
+    parser.add_argument('--cache_dir', type=str, default=None)
     args = parser.parse_args()
 
     if not args.generate_predicates:
         print("Evaluating model using precalculated predicates")
-        evaluate_qa_model(args.model_path)
+        evaluate_qa_model(args.model_path, cache_dir=args.cache_dir)
     else:
         print("Generating predicates")
         generate_predicates(args.model_path)
