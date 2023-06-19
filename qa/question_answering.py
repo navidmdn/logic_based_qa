@@ -16,6 +16,7 @@ class QuestionAnswering:
 
         translator_tokenizer = AutoTokenizer.from_pretrained(pretrained_translator_path)
         translator_model = AutoModelForSeq2SeqLM.from_pretrained(pretrained_translator_path)
+        translator_model.eval()
         translator_model = translator_model.to(self.device)
 
         return translator_model, translator_tokenizer
