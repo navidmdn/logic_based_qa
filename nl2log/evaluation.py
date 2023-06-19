@@ -34,7 +34,7 @@ def load_test_data(data_path=None):
 
 
 def get_translated_output(question_list, tokenizer, model, device, batch_size=256):
-    question_list = [f"predicates: {q}" for q in question_list]
+    question_list = [f"logical form: {q}" for q in question_list]
     results = []
     i = 0
     pbar = tqdm(total=len(question_list))
@@ -66,7 +66,7 @@ def evaluate_translations_exact_accuracy(translated_output, logical_steps):
         if translated == logical_step:
             num_correct += 1
         else:
-            #print(translated, logical_step)
+            print(translated, logical_step)
             pass
     return num_correct / len(translated_output)
 

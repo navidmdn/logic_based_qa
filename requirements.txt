@@ -1,7 +1,12 @@
 transformers==4.28.1
 tqdm==4.62.3
 git+https://github.com/yuce/pyswip@master#egg=pyswip
-datasets==2.4.0
-evaluate==0.2.2
+datasets==2.13.0
+evaluate==0.4.0
 rapidfuzz==2.5.0
 rouge-score==0.1.2
+cchardet==2.1.7
+chardet==5.1.0
+accelerate==0.20.3
+tensorboard==2.13.
+Cython

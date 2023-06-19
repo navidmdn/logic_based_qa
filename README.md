@@ -31,12 +31,20 @@ run the commands below inside the project base directory
 
 ### preparing dataset and training model
 
+create a random sample of 1000 training examples with equal number of samples from each hops:
 ```
-!PYTHONPATH=. python nl2log/data_loader.py --data_path=./data --dataset=metaqa --sample_
-bash translation_trainer.sh
+!PYTHONPATH=. python nl2log/data_loader.py --data_path=./data --dataset=metaqa --sample_size 1000
+```
+
+Previous command creates a dataset called train_1000.json. Run the trainer on this sample:
+```
+bash translation_trainer.sh 1000
 ```
 
 ### evaluate the trained seq2seq model checkpoint
+
+Evaluates the translation accuracy on all test samples:
+ 
 ```
 !PYTHONPATH=. python nl2log/evaluation.py --model_cp=models/t5-small/checkpoint-x
 ```

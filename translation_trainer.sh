@@ -2,7 +2,7 @@ python nl2log/trainer.py \
     --model_name_or_path t5-small \
     --do_train \
     --do_eval \
-    --train_file "./data/$1.json" \
+    --train_file "./data/train_$1.json" \
     --validation_file ./data/dev.json \
     --source_prefix "logical form: " \
     --output_dir "./models/t5-small-$1" \
@@ -16,4 +16,5 @@ python nl2log/trainer.py \
     --max_steps 5000\
     --generation_max_length 200 \
     --save_steps 5000 \
-    --cache_dir /Library/smadani/navid/huggingface_cache
+    --report_to tensorboard \
+    --cache_dir ../hf_cache
