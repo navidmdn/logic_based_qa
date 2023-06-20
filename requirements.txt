@@ -8,5 +8,6 @@ rouge-score==0.1.2
 cchardet==2.1.7
 chardet==5.1.0
 accelerate==0.20.3
-tensorboard==2.13.
+tensorboard==2.13.0
+gradio==3.35.2
 Cython

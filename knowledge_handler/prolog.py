@@ -86,3 +86,23 @@ class PrologDA:
             elif len(res) == 3:
                 answers.append(res['Z'])
         return [x for x in list(set(answers))]
+
+
+    def query_with_trace(self, query: str, question_entity: str):
+        query = self.transform_query_with_vocab(query, question_entity)
+        try:
+            results = list(self.prolog.query(query))
+        except Exception as e:
+            print(f"final query: {query}")
+            raise e
+        answers = []
+        for res in results:
+            for k, v in res.items():
+                res[k] = self.inv_ent_vocab[v]
+            if len(res) == 1:
+                answers.append(res['X'])
+            elif len(res) == 2:
+                answers.append(res['Y'])
+            elif len(res) == 3:
+                answers.append(res['Z'])
+        return [x for x in list(set(answers))], results

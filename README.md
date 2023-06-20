@@ -83,12 +83,16 @@ internally, this produces a Prolog query and then fetches the answers:
 
 ```Prolog
 Query:
-starred_actors(Creepshow,X), starred_actors_reverse(X,Y), in_language(Y,Z), not(Y==Creepshow)
+starred_actors(Creepshow,X), starred_actors_reverse(X,Y), in_language(Y,Z)
 
 Answer:
 ['English', 'Polish']
 
 ```
+
+## Fixing bugs in the dataset
+
+the data in `data/` file is the fixed version of the original MetaQA dataset.
 
 modifications to the 1-hop questions in test set:
 The answer set to the following question in 1hop qa_test modified from 
