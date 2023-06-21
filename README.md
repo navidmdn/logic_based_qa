@@ -7,6 +7,11 @@ In this repo I have implemented the code for translating MetaQA
 questions into logical predicates and then using Prolog to build a 
 knowledge base over the MetaQA knowledge graph and answer the questions.
 
+## Try the whole pipeline in Google Colab
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://raw.githubusercontent.com/navidmdn/logic_based_qa/main/notebooks/run.ipynb)
+
+
 ## Installing requirements
 
 This project has been tested on ubuntu 20.04 and macos 10.14 operating systems, with
