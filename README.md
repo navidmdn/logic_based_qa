@@ -1,4 +1,3 @@
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/answering-questions-over-knowledge-graphs/question-answering-on-metaqa)](https://paperswithcode.com/sota/question-answering-on-metaqa?p=answering-questions-over-knowledge-graphs)
 
 # logic_based_qa
 
