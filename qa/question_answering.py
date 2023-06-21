@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
-from typing import Union, List
+from typing import Union, List, Dict
 import re
 from tqdm import tqdm
 
@@ -63,12 +63,15 @@ class QuestionAnswering:
 
             print(e)
 
-    def answer_question(self, question: str) -> str:
+    def answer_question(self, question: str) -> Dict:
         question_ent = re.findall(r'\[(.+)\]', question)[0]
         question = question.replace(question_ent, 'ENT')
         predicate = self.nl2predicates(question)
         predicate = predicate.replace('ENT', question_ent)
         results = self.prolog_da.query_with_trace(predicate, question_ent)
-        return results
-
-
+        return {
+            'answers': results[0],
+            'trace': results[1],
+            'relation_trace': results[2],
+            'qent': question_ent
+        }

@@ -109,6 +109,16 @@ Answer:
 
 ```
 
+## Gradio app for demo
+
+you can run the gradio application which uses our pre trained model on huggingface.
+First install [gradio](https://gradio.app/quickstart/) and `networkx` for python and then
+run the `app.py` file:
+
+![gradio app](./assets/demo.png)
+
+
+
 ## Fixing bugs in the dataset
 
 the data in `data/` file is the fixed version of the original MetaQA dataset.

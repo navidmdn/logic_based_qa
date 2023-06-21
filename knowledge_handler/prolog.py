@@ -105,4 +105,8 @@ class PrologDA:
                 answers.append(res['Y'])
             elif len(res) == 3:
                 answers.append(res['Z'])
-        return [x for x in list(set(answers))], results
+
+        relation_trace = re.findall(r"rel_\d+", query)
+        rel_vocab_inv = {v: k for k, v in self.rel_vocab.items()}
+        relation_trace = [rel_vocab_inv[rel] for rel in relation_trace]
+        return [x for x in list(set(answers))], results, relation_trace
