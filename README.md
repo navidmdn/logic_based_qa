@@ -84,6 +84,20 @@ qa.answer_question(
 )
 ```
 
+Alternatively you can use our pretrained models on Huggingface to test the model:
+
+```python
+from qa.question_answering import QuestionAnswering
+from qa.data_loader import MetaQADataLoader
+
+data_loader = MetaQADataLoader('./data')
+qa = QuestionAnswering('navidmadani/nl2logic_t5small_metaqa', data_loader)
+
+qa.answer_question(
+    "the films that share actors with the film [Creepshow] were in which languages"
+)
+```
+
 internally, this produces a Prolog query and then fetches the answers:
 
 ```Prolog
