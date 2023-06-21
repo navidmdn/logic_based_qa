@@ -9,7 +9,7 @@ knowledge base over the MetaQA knowledge graph and answer the questions.
 
 ## Try the whole pipeline in Google Colab
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://raw.githubusercontent.com/navidmdn/logic_based_qa/main/notebooks/run.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/navidmdn/logic_based_qa/blob/main/notebooks/run.ipynb)
 
 
 ## Installing requirements
