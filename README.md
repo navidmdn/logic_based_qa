@@ -1,6 +1,12 @@
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/answering-questions-over-knowledge-graphs/question-answering-on-metaqa)](https://paperswithcode.com/sota/question-answering-on-metaqa?p=answering-questions-over-knowledge-graphs)
 
 # logic_based_qa
-Anonymized.
+
+ANONYMOUS REPO FOR REVIEWING
+
+## Try the whole pipeline in Google Colab
+
+ANONYMOUS REPO FOR REVIEWING
 
 ## Installing requirements
 
@@ -68,20 +74,6 @@ from qa.data_loader import MetaQADataLoader
 
 data_loader = MetaQADataLoader('./data')
 qa = QuestionAnswering('./models/t5-small/checkpoint-5000', data_loader)
-
-qa.answer_question(
-    "the films that share actors with the film [Creepshow] were in which languages"
-)
-```
-
-## Use our pretrained checkpoint
-
-```python
-from qa.question_answering import QuestionAnswering
-from qa.data_loader import MetaQADataLoader
-
-data_loader = MetaQADataLoader('./data')
-qa = QuestionAnswering('[ANONYMOUS]', data_loader)
 
 qa.answer_question(
     "the films that share actors with the film [Creepshow] were in which languages"
